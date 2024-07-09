@@ -8,6 +8,7 @@ This project is a simple Todo application built with an Express backend, focusin
 - **Password Hashing**: Passwords are hashed using bcrypt for enhanced security.
 - **CRUD Operations**: Users can create, read, update, and delete their own todos.
 - **Authorization**: Users can only access their own todos, ensuring data privacy and security.
+- **No Database**: All data is stored in memory using arrays, making it simple and lightweight.
 
 ## Technologies Used
 
@@ -37,48 +38,49 @@ This project is a simple Todo application built with an Express backend, focusin
 
 ## API Endpoints
 
-- **POST /auth/signup**: Register a new user.
-  \`\`\`
+- **POST /register**: Register a new user.
+  \`\`\`json
   {
-  "name":"example",
-  "email":"example@gmail.com",
-  "password":"example"
-  }
-  \`\`\`
-- **POST /auth/login**: Login a user and receive a JWT.
-  \`\`\`
-  {
-  "email":"example@gmail.com",
-  "password":"example"
+  "name": "example",
+  "email": "example@gmail.com",
+  "password": "example"
   }
   \`\`\`
 
-  You will get access and refresh tokens. Make sure to use them in the authorization section(bearer token) in all future requests.
-
-- **POST /auth/refresh**: Refresh the access token after expiry and receive a JWT.
-  \`\`\`
+- **POST /login**: Login a user and receive a JWT.
+  \`\`\`json
   {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYW1lIjoiYWR3OCIsImVtYWlsIjoiYWR3OEBnbWFpbC5jb20iLCJpYXQiOjE3MjA1MjMzMjEsImV4cCI6MTcyMDUyMzM1MX0.l6Wf93eQZ6iVhPw_3DLKmi83WxCfjCVHRE2GWfpdbck"
+  "email": "example@gmail.com",
+  "password": "example"
   }
   \`\`\`
 
-  You will get the new access token. Make sure to use them in the authorization section(bearer token) in all future requests.
+- **GET /todos**: Get all todos for the authenticated user.
 
-- **GET /todo**: Get all todos for the authenticated user.
-- **POST /todo**: Create a new todo for the authenticated user.
-  \`\`\`
+- **POST /todos**: Create a new todo for the authenticated user.
+  \`\`\`json
   {
   "todo": "example",
   "isCompleted": true,
   "dueDate": "2024-07-22"
   }
   \`\`\`
-- **PUT /todo/:id**: Update a todo by ID for the authenticated user.
-  \`\`\`
+
+- **PUT /todos/:id**: Update a todo by ID for the authenticated user.
+  \`\`\`json
   {
   "todo": "example",
   "isCompleted": true,
   "dueDate": "2024-07-22"
   }
   \`\`\`
-- **DELETE /todo/:id**: Delete a todo by ID for the authenticated user.
+
+- **DELETE /todos/:id**: Delete a todo by ID for the authenticated user.
+
+## Future Improvements
+
+- Add a frontend interface using HTML, CSS, and JavaScript.
+- Integrate a database for persistent data storage.
+- Implement additional features such as due dates and priority levels for todos.
+
+Feel free to fork this repository, submit issues, or contribute to the development of this application.
