@@ -62,8 +62,10 @@ export async function refresh(body: { refreshToken: string }) {
       error: "Refresh token is necessary",
     };
   }
-
-  const decoded: any = verify(refreshToken, config.jwt.secret!);
+  const decoded = verify(refreshToken, config.jwt.secret!);
+  if (typeof decoded === "string") {
+    return;
+  }
 
   const payload = {
     id: decoded.id,

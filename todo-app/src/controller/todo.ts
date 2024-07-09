@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import * as todoService from "../service/todo";
+import { verify } from "jsonwebtoken";
+import config from "../config";
+import { extractUserId } from "../utils/userId";
 
 /**
  * The function `getTodos` retrieves todos data and sends it as a JSON response.
@@ -9,7 +12,8 @@ import * as todoService from "../service/todo";
  * control the response status.
  */
 export function getTodos(req: Request, res: Response) {
-  const data = todoService.getTodos();
+  const id = extractUserId(req);
+  const data = todoService.getTodos(id);
   res.json(data);
 }
 
@@ -22,8 +26,9 @@ export function getTodos(req: Request, res: Response) {
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
 export function getTodoById(req: Request, res: Response) {
+  const userId = extractUserId(req);
   const { id } = req.params;
-  const data = todoService.getTodoById(id);
+  const data = todoService.getTodoById(id, userId);
   res.json(data);
 }
 
@@ -37,8 +42,9 @@ export function getTodoById(req: Request, res: Response) {
  * been
  */
 export function createTodo(req: Request, res: Response) {
+  const id = extractUserId(req);
   const { body } = req;
-  const data = todoService.createTodo(body);
+  const data = todoService.createTodo(body, id);
   res.json({
     message: "Todo Created",
     created: data,
@@ -54,9 +60,10 @@ export function createTodo(req: Request, res: Response) {
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
 export function updateTodo(req: Request, res: Response) {
+  const userId = extractUserId(req);
   const { body } = req;
   const { id } = req.params;
-  const data = todoService.updateTodo(id, body);
+  const data = todoService.updateTodo(id, body, userId);
   res.json(data);
 }
 
@@ -70,8 +77,9 @@ export function updateTodo(req: Request, res: Response) {
  * "Successfully deleted" will be returned.
  */
 export function deleteTodo(req: Request, res: Response) {
+  const userId = extractUserId(req);
   const { id } = req.params;
-  const error = todoService.deleteTodo(id);
+  const error = todoService.deleteTodo(id, userId);
 
   if (error) {
     return res.json(error);

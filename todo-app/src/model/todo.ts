@@ -7,26 +7,41 @@ let todos = [
     todo: "Eat",
     isCompleted: true,
     dueDate: "2024-12-20",
+    createdBy: "2",
   },
   {
     id: "2",
     todo: "Drink",
     isCompleted: false,
     dueDate: "2024-12-20",
+    createdBy: "2",
   },
   {
     id: "3",
     todo: "Sleep",
     isCompleted: false,
     dueDate: "2024-12-20",
+    createdBy: "1",
+  },
+  {
+    id: "4",
+    todo: "Dance",
+    isCompleted: false,
+    dueDate: "2024-12-20",
+    createdBy: "3",
   },
 ];
 
 /**
  * The function `getTodoById` retrieves all todo item  from a list of todos.
  * @returns The function `getTodoById` returns all todo object from the `todos` array*/
-export function getTodos() {
-  return todos;
+export function getTodos(userId: string) {
+  console.log(userId);
+  return todos.filter((element) => {
+    if (element.createdBy === userId) {
+      return element;
+    }
+  });
 }
 
 /**
@@ -36,8 +51,10 @@ export function getTodos() {
  * @returns The function `getTodoById` returns a todo object from the `todos` array that matches the
  * provided `id`.
  */
-export function getTodoById(id: string) {
-  return todos.find(({ id: todoId }) => todoId === id);
+export function getTodoById(id: string, userId: string) {
+  return todos.find(
+    ({ id: todoId, createdBy }) => todoId === id && createdBy === userId
+  );
 }
 
 /**
@@ -47,8 +64,8 @@ export function getTodoById(id: string) {
  * @returns The function `createTodo` is returning the newly created todo item after adding it to the
  * `todos` array.
  */
-export function createTodo(todo: ITodo) {
-  const newTodo = { id: `${todos.length + 1}`, ...todo };
+export function createTodo(todo: ITodo, id: string) {
+  const newTodo = { id: `${todos.length + 1}`, createdBy: `${id}`, ...todo };
   todos.push(newTodo);
   return newTodo;
 }
@@ -62,7 +79,6 @@ export function createTodo(todo: ITodo) {
  */
 export function updateTodo(id: string, todo: ITodo) {
   let updatedTodo;
-  console.log(todo.isCompleted);
   todos = todos.map((element) => {
     if (element.id !== id) {
       return element;

@@ -6,7 +6,7 @@ const config = {
   port: process.env.PORT,
   jwt: {
     secret: process.env.JWT_SECRET,
-    accessTokenExpiryMS: 30,
+    accessTokenExpiryMS: 300,
     refreshTokenExpiryMS: 3000,
   },
 };
