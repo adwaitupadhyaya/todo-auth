@@ -4,6 +4,7 @@ import { sign } from "jsonwebtoken";
 import { IUser } from "../interface/user";
 import * as UserService from "../service/user";
 import config from "../config";
+import { verify } from "jsonwebtoken";
 
 export async function signup(body: Pick<IUser, "name" | "email" | "password">) {
   const password = await bcrypt.hash(body.password, 10);
@@ -51,4 +52,27 @@ export async function login(body: Pick<IUser, "email" | "password">) {
     accessToken,
     refreshToken,
   };
+}
+
+export async function refresh(body: { refreshToken: string }) {
+  const { refreshToken } = body;
+
+  if (!refreshToken) {
+    return {
+      error: "Refresh token is necessary",
+    };
+  }
+
+  const decoded: any = verify(refreshToken, config.jwt.secret!);
+
+  const payload = {
+    id: decoded.id,
+    name: decoded.name,
+    email: decoded.email,
+  };
+
+  const accessToken = sign(payload, config.jwt.secret!, {
+    expiresIn: config.jwt.accessTokenExpiryMS,
+  });
+  return { accessToken };
 }
