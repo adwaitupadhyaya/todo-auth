@@ -40,7 +40,7 @@ This project is a simple Todo application built with an Express backend, focusin
 
 ## API Endpoints
 
-- **POST /register**: Register a new user.
+- **POST auth/signup**: Register a new user.
 
   ```json
   {
@@ -50,12 +50,20 @@ This project is a simple Todo application built with an Express backend, focusin
   }
   ```
 
-- **POST /login**: Login a user and receive a JWT.
+- **POST auth/login**: Login a user and receive a JWT.
 
   ```json
   {
     "email": "example@gmail.com",
     "password": "example"
+  }
+  ```
+
+- **POST auth/refresh**: refresh by passing the refresh token an receive a new access token.
+
+  ```json
+  {
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYW1lIjoiYWR3OCIsImVtYWlsIjoiYWR3OEBnbWFpbC5jb20iLCJpYXQiOjE3MjA1MjMzMTIsImV4cCI6MTcyMDUyNjMxMn0.ysHfrDmJTibjah2XYPEod-bfAgQs9fqtN35kUDdtNVI"
   }
   ```
 
