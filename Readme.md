@@ -38,6 +38,14 @@ This project is a simple Todo application built with an Express backend, focusin
 
 4. The application will be running on \`http://localhost:3000\`.
 
+OR
+
+1. With docker
+
+```bash
+  docker pull adwait627upadhyaya/todo-auth:latest
+```
+
 ## API Endpoints
 
 - **POST auth/signup**: Register a new user.
