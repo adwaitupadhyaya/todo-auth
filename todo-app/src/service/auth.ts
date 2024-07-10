@@ -6,7 +6,9 @@ import * as UserService from "../service/user";
 import config from "../config";
 import { verify } from "jsonwebtoken";
 
-export async function signup(body: Pick<IUser, "name" | "email" | "password">) {
+export async function signup(
+  body: Pick<IUser, "name" | "email" | "password" | "permissions">
+) {
   const password = await bcrypt.hash(body.password, 10);
   const newUser = {
     ...body,
