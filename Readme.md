@@ -69,6 +69,8 @@ This project is a simple Todo application built with an Express backend, focusin
 
 - **GET /todos**: Get all todos for the authenticated user.
 
+- **GET /todos/:id**: Get specific todos for the authenticated user.
+
 - **POST /todos**: Create a new todo for the authenticated user.
 
   ```json
