@@ -1,3 +1,4 @@
+import { NotFoundError } from "./../error/NotFoundError";
 import bcrypt from "bcrypt";
 import { NextFunction, Response } from "express";
 import { Request } from "../interface/auth";
@@ -7,7 +8,7 @@ import HttpStatusCodes from "http-status-codes";
 
 export function getUsers(req: Request, res: Response) {
   const data = userService.getUsers();
-  res.json(data);
+  res.status(HttpStatusCodes.OK).json(data);
 }
 
 export function getUserById(req: Request, res: Response, next: NextFunction) {
@@ -46,7 +47,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params;
   const data = userService.deleteUser(id);
   if (!data) {
-    next(new BadRequestError(`User with id ${id} not found`));
+    next(new NotFoundError(`User with id ${id} not found`));
     return;
   }
   res.status(HttpStatusCodes.OK).json(data);

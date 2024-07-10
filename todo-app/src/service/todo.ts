@@ -64,9 +64,7 @@ export function deleteTodo(id: string, userId: string) {
   const todoToDelete = TodoModel.getTodoById(id, userId);
 
   if (!todoToDelete) {
-    return {
-      error: `Todo with id : ${id} doesnt exist`,
-    };
+    return todoToDelete;
   }
-  TodoModel.deleteTodo(id);
+  return TodoModel.deleteTodo(id, userId);
 }

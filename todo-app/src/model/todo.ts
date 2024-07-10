@@ -1,4 +1,3 @@
-import { todo } from "node:test";
 import { ITodo } from "./../interface/todo";
 
 let todos = [
@@ -96,6 +95,8 @@ export function updateTodo(id: string, todo: ITodo) {
  * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
  * todo item that needs to be deleted from the `todos` array.
  */
-export function deleteTodo(id: string) {
-  todos = todos.filter((element) => element.id !== id);
+export function deleteTodo(id: string, userId: string) {
+  return (todos = todos.filter(
+    (element) => element.id !== id && element.createdBy === userId
+  ));
 }

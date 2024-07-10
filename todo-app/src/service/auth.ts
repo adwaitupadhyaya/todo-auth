@@ -22,9 +22,7 @@ export async function login(body: Pick<IUser, "email" | "password">) {
   const existingUser = UserService.getUserByEmail(body.email);
 
   if (!existingUser) {
-    return {
-      error: "No user with that email exists",
-    };
+    return existingUser;
   }
 
   const isValidPassword = await bcrypt.compare(
@@ -33,9 +31,7 @@ export async function login(body: Pick<IUser, "email" | "password">) {
   );
 
   if (!isValidPassword) {
-    return {
-      error: "Invalid Password",
-    };
+    return isValidPassword;
   }
 
   const payload = {
@@ -60,11 +56,8 @@ export async function login(body: Pick<IUser, "email" | "password">) {
 
 export async function refresh(body: { refreshToken: string }) {
   const { refreshToken } = body;
-
   if (!refreshToken) {
-    return {
-      error: "Refresh token is necessary",
-    };
+    return refreshToken;
   }
   const decoded = verify(refreshToken, config.jwt.secret!);
   if (typeof decoded === "string") {

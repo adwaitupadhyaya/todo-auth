@@ -18,7 +18,7 @@ import { NotFoundError } from "../error/NotFoundError";
 export function getTodos(req: Request, res: Response) {
   const id = req.user?.id!;
   const data = todoService.getTodos(id);
-  res.json(data);
+  res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -36,6 +36,7 @@ export function getTodoById(req: Request, res: Response, next: NextFunction) {
 
   if (!data) {
     next(new NotFoundError(`Todo with id: ${id} doesnt exist`));
+    return;
   }
 
   res.status(HttpStatusCodes.OK).json(data);
@@ -92,15 +93,15 @@ export function updateTodo(req: Request, res: Response, next: NextFunction) {
  * JSON response. Otherwise, if the deletion is successful, a JSON response with the message
  * "Successfully deleted" will be returned.
  */
-export function deleteTodo(req: Request, res: Response) {
+export function deleteTodo(req: Request, res: Response, next: NextFunction) {
   const userId = req.user?.id!;
   const { id } = req.params;
-  const error = todoService.deleteTodo(id, userId);
+  const data = todoService.deleteTodo(id, userId);
 
-  if (error) {
-    return res.status(HttpStatusCodes.NOT_FOUND).json(error);
+  if (!data) {
+    next(new NotFoundError(`Todo with id ${id} not found`));
+    return;
   }
-  res.status(HttpStatusCodes.OK).json({
-    message: "Succesfully deleted",
-  });
+
+  res.status(HttpStatusCodes.OK).json(data);
 }

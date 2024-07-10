@@ -20,7 +20,9 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   try {
     const user = verify(tokens[1], config.jwt.secret!) as IUser;
     req.user = user;
-  } catch (error) {}
+  } catch (error) {
+    next(new UnauthenticatedError("JWT expired"));
+  }
   next();
 }
 
@@ -29,6 +31,7 @@ export function authorize(permission: string) {
     const user = req.user!;
     if (!user.permissions.includes(permission)) {
       next(new UnauthenticatedError("Forbidden"));
+      return;
     }
 
     next();
