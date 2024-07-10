@@ -5,11 +5,15 @@ import { IUser } from "../interface/user";
 import * as UserService from "../service/user";
 import config from "../config";
 import { verify } from "jsonwebtoken";
-import { permission } from "process";
 
+import loggerWithNameSpace from "../utils/logger";
+
+const loggerArea = "service";
+const logger = loggerWithNameSpace("Auth Service");
 export async function signup(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
+  logger.info(`${loggerArea}: signup`);
   const password = await bcrypt.hash(body.password, 10);
   const newUser = {
     ...body,
@@ -19,6 +23,7 @@ export async function signup(
 }
 
 export async function login(body: Pick<IUser, "email" | "password">) {
+  logger.info(`${loggerArea}: Login`);
   const existingUser = UserService.getUserByEmail(body.email);
 
   if (!existingUser) {
@@ -55,6 +60,7 @@ export async function login(body: Pick<IUser, "email" | "password">) {
 }
 
 export async function refresh(body: { refreshToken: string }) {
+  logger.info(`${loggerArea}: refresh`);
   const { refreshToken } = body;
   if (!refreshToken) {
     return refreshToken;

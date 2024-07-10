@@ -1,5 +1,10 @@
 import { ITodo } from "./../interface/todo";
 
+import loggerWithNameSpace from "../utils/logger";
+
+const loggerArea = "model";
+const logger = loggerWithNameSpace("Todo Model");
+
 let todos = [
   {
     id: "1",
@@ -35,6 +40,7 @@ let todos = [
  * The function `getTodoById` retrieves all todo item  from a list of todos.
  * @returns The function `getTodoById` returns all todo object from the `todos` array*/
 export function getTodos(userId: string) {
+  logger.info(`${loggerArea}: get todos`);
   return todos.filter((element) => {
     if (element.createdBy === userId) {
       return element;
@@ -50,6 +56,7 @@ export function getTodos(userId: string) {
  * provided `id`.
  */
 export function getTodoById(id: string, userId: string) {
+  logger.info(`${loggerArea}: get todos by id`);
   return todos.find(
     ({ id: todoId, createdBy }) => todoId === id && createdBy === userId
   );
@@ -63,6 +70,7 @@ export function getTodoById(id: string, userId: string) {
  * `todos` array.
  */
 export function createTodo(todo: ITodo, id: string) {
+  logger.info(`${loggerArea}: create todos`);
   const newTodo = { id: `${todos.length + 1}`, createdBy: `${id}`, ...todo };
   todos.push(newTodo);
   return newTodo;
@@ -76,6 +84,7 @@ export function createTodo(todo: ITodo, id: string) {
  * @returns The `updateTodo` function is returning the updated todo item with the specified `id`.
  */
 export function updateTodo(id: string, todo: ITodo) {
+  logger.info(`${loggerArea}: update todos todos`);
   let updatedTodo;
   todos = todos.map((element) => {
     if (element.id !== id) {
@@ -96,6 +105,7 @@ export function updateTodo(id: string, todo: ITodo) {
  * todo item that needs to be deleted from the `todos` array.
  */
 export function deleteTodo(id: string, userId: string) {
+  logger.info(`${loggerArea}: delete todos`);
   return (todos = todos.filter(
     (element) => element.id !== id && element.createdBy === userId
   ));

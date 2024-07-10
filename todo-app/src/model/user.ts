@@ -1,5 +1,10 @@
 import { IUser } from "../interface/user";
 
+import loggerWithNameSpace from "../utils/logger";
+
+const loggerArea = "model";
+const logger = loggerWithNameSpace("User Model");
+
 let users: IUser[] = [
   {
     name: "adw8",
@@ -18,24 +23,29 @@ let users: IUser[] = [
 ];
 
 export function getUsers() {
+  logger.info(`${loggerArea}: get users`);
   return users;
 }
 
 export function getUserById(id: string) {
+  logger.info(`${loggerArea}: get users by id `);
   return users.find(({ id: userId }) => userId === id);
 }
 
 export function getUserByEmail(email: string) {
+  logger.info(`${loggerArea}: get users by email`);
   return users.find(({ email: userEmail }) => userEmail === email);
 }
 
 export function createUser(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
+  logger.info(`${loggerArea}: create users`);
   return users.push({ ...body, id: `${users.length + 1}` });
 }
 
 export function updateUser(id: string, body: Omit<IUser, "id">) {
+  logger.info(`${loggerArea}: update users`);
   return (users = users.map((element) => {
     if (element.id === id) {
       element = { id, ...body };
@@ -46,5 +56,6 @@ export function updateUser(id: string, body: Omit<IUser, "id">) {
 }
 
 export function deleteUser(id: string) {
+  logger.info(`${loggerArea}: delete users`);
   return (users = users.filter((element) => element.id !== id));
 }
