@@ -5,6 +5,8 @@ import { verify } from "jsonwebtoken";
 import config from "../config";
 import { extractUserId } from "../utils/userId";
 import { BadRequestError } from "../error/BadRequestError";
+import HttpStatusCodes from "http-status-codes";
+import { NotFoundError } from "../error/NotFoundError";
 
 /**
  * The function `getTodos` retrieves todos data and sends it as a JSON response.
@@ -27,11 +29,16 @@ export function getTodos(req: Request, res: Response) {
  * Express Response object. It is used to send a response back to the client making the request. In
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
-export function getTodoById(req: Request, res: Response) {
+export function getTodoById(req: Request, res: Response, next: NextFunction) {
   const userId = req.user?.id!;
   const { id } = req.params;
   const data = todoService.getTodoById(id, userId);
-  res.json(data);
+
+  if (!data) {
+    next(new NotFoundError(`Todo with id: ${id} doesnt exist`));
+  }
+
+  res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -47,7 +54,7 @@ export function createTodo(req: Request, res: Response) {
   const id = req.user?.id!;
   const { body } = req;
   const data = todoService.createTodo(body, id);
-  res.json({
+  res.status(HttpStatusCodes.CREATED).json({
     message: "Todo Created",
     created: data,
   });
@@ -68,11 +75,12 @@ export function updateTodo(req: Request, res: Response, next: NextFunction) {
   const data = todoService.updateTodo(id, body, userId);
 
   if (!data) {
-    next(new BadRequestError(`Todo with ${id} does not exist`));
+    console.log("here baby");
+    next(new NotFoundError(`Todo with ${id} does not exist`));
     return;
   }
 
-  res.json(data);
+  res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -90,9 +98,9 @@ export function deleteTodo(req: Request, res: Response) {
   const error = todoService.deleteTodo(id, userId);
 
   if (error) {
-    return res.json(error);
+    return res.status(HttpStatusCodes.NOT_FOUND).json(error);
   }
-  res.json({
+  res.status(HttpStatusCodes.OK).json({
     message: "Succesfully deleted",
   });
 }

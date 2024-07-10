@@ -27,7 +27,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 export function authorize(permission: string) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = req.user!;
-    console.log(user);
     if (!user.permissions.includes(permission)) {
       next(new UnauthenticatedError("Forbidden"));
     }

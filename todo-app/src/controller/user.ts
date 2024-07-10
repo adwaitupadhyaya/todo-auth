@@ -1,7 +1,9 @@
+import bcrypt from "bcrypt";
 import { NextFunction, Response } from "express";
 import { Request } from "../interface/auth";
 import * as userService from "../service/user";
 import { BadRequestError } from "../error/BadRequestError";
+import HttpStatusCodes from "http-status-codes";
 
 export function getUsers(req: Request, res: Response) {
   const data = userService.getUsers();
@@ -15,11 +17,18 @@ export function getUserById(req: Request, res: Response, next: NextFunction) {
     next(new BadRequestError(`User with id ${id} not found`));
     return;
   }
-  res.json(data);
+  res.status(HttpStatusCodes.OK).json(data);
 }
 
-export function createUser(req: Request, res: Response) {
+export async function createUser(req: Request, res: Response) {
   const { body } = req;
+  const password = await bcrypt.hash(body.password, 10);
+  const newUser = {
+    ...body,
+    password,
+  };
+  const data = userService.createUser(newUser);
+  res.status(HttpStatusCodes.CREATED).json(data);
 }
 
 export function updateUser(req: Request, res: Response, next: NextFunction) {
@@ -30,7 +39,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
     next(new BadRequestError(`User with id ${id} not found`));
     return;
   }
-  res.json(data);
+  res.status(HttpStatusCodes.OK).json(data);
 }
 
 export function deleteUser(req: Request, res: Response, next: NextFunction) {
@@ -40,5 +49,5 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
     next(new BadRequestError(`User with id ${id} not found`));
     return;
   }
-  res.json(data);
+  res.status(HttpStatusCodes.OK).json(data);
 }

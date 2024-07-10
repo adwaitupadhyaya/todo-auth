@@ -32,7 +32,7 @@ export function getUserByEmail(email: string) {
 export function createUser(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
-  users.push({ ...body, id: `${users.length + 1}` });
+  return users.push({ ...body, id: `${users.length + 1}` });
 }
 
 export function updateUser(id: string, body: Omit<IUser, "id">) {

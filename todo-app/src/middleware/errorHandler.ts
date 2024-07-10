@@ -3,6 +3,7 @@ import { NextFunction, Response, Request } from "express";
 import HttpStatusCodes from "http-status-codes";
 import { UnauthenticatedError } from "../error/UnauthenticatedError";
 import loggerWithNameSpace from "../utils/logger";
+import { NotFoundError } from "../error/NotFoundError";
 
 const logger = loggerWithNameSpace("ErrorHandler");
 
@@ -27,8 +28,12 @@ export function genericErrorHandler(
     });
   }
   if (error instanceof BadRequestError) {
-    console.log(error);
     return res.status(HttpStatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
+  }
+  if (error instanceof NotFoundError) {
+    return res.status(HttpStatusCodes.NOT_FOUND).json({
       message: error.message,
     });
   }

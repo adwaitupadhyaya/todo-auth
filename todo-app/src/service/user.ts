@@ -12,7 +12,7 @@ export function getUserById(id: string) {
 export function createUser(
   newUser: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
-  userModel.createUser(newUser);
+  return userModel.createUser(newUser);
 }
 
 export function getUserByEmail(email: string) {

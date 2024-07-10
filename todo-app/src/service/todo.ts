@@ -19,9 +19,7 @@ export function getTodoById(id: string, userId: string) {
   const data = TodoModel.getTodoById(id, userId);
 
   if (!data) {
-    return {
-      error: "No todo with that id",
-    };
+    return data;
   }
 
   return data;
@@ -44,7 +42,6 @@ export function createTodo(body: ITodo, id: string) {
  */
 export function updateTodo(id: string, body: ITodo, userId: string) {
   const todoToUpdate = TodoModel.getTodoById(id, userId);
-  console.log(todoToUpdate);
   if (!todoToUpdate) {
     return todoToUpdate;
   }
