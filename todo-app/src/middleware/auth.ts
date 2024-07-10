@@ -1,6 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import { Request } from "../interface/auth";
 import { verify } from "jsonwebtoken";
 import config from "../config";
+import { IUser } from "../interface/user";
+import { UnauthenticatedError } from "../error/UnauthenticatedError";
 
 export function auth(req: Request, res: Response, next: NextFunction) {
   const { authorization } = req.headers;
@@ -13,6 +16,22 @@ export function auth(req: Request, res: Response, next: NextFunction) {
     next(new Error("Unauthenticated"));
     return;
   }
-  verify(tokens[1], config.jwt.secret!);
+
+  try {
+    const user = verify(tokens[1], config.jwt.secret!) as IUser;
+    req.user = user;
+  } catch (error) {}
   next();
+}
+
+export function authorize(permission: string) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user!;
+    console.log(user);
+    if (!user.permissions.includes(permission)) {
+      next(new UnauthenticatedError("Forbidden"));
+    }
+
+    next();
+  };
 }

@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { Request } from "../interface/auth";
 import * as AuthService from "../service/auth";
 
 export function signup(req: Request, res: Response) {

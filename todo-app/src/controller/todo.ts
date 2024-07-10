@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { Request } from "../interface/auth";
 import * as todoService from "../service/todo";
 import { verify } from "jsonwebtoken";
 import config from "../config";

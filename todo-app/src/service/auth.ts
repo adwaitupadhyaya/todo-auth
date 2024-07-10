@@ -5,6 +5,7 @@ import { IUser } from "../interface/user";
 import * as UserService from "../service/user";
 import config from "../config";
 import { verify } from "jsonwebtoken";
+import { permission } from "process";
 
 export async function signup(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">
@@ -41,6 +42,7 @@ export async function login(body: Pick<IUser, "email" | "password">) {
     id: existingUser.id,
     name: existingUser.name,
     email: existingUser.email,
+    permissions: existingUser.permissions,
   };
 
   const accessToken = sign(payload, config.jwt.secret!, {
@@ -73,6 +75,7 @@ export async function refresh(body: { refreshToken: string }) {
     id: decoded.id,
     name: decoded.name,
     email: decoded.email,
+    permissions: decoded.permissions,
   };
 
   const accessToken = sign(payload, config.jwt.secret!, {
