@@ -1,9 +1,10 @@
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { Request } from "../interface/auth";
 import * as todoService from "../service/todo";
 import { verify } from "jsonwebtoken";
 import config from "../config";
 import { extractUserId } from "../utils/userId";
+import { BadRequestError } from "../error/BadRequestError";
 
 /**
  * The function `getTodos` retrieves todos data and sends it as a JSON response.
@@ -60,11 +61,17 @@ export function createTodo(req: Request, res: Response) {
  * Express Response object. It is used to send a response back to the client making the request. In
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
-export function updateTodo(req: Request, res: Response) {
+export function updateTodo(req: Request, res: Response, next: NextFunction) {
   const userId = req.user?.id!;
   const { body } = req;
   const { id } = req.params;
   const data = todoService.updateTodo(id, body, userId);
+
+  if (!data) {
+    next(new BadRequestError(`Todo with ${id} does not exist`));
+    return;
+  }
+
   res.json(data);
 }
 

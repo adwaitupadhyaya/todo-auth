@@ -44,11 +44,9 @@ export function createTodo(body: ITodo, id: string) {
  */
 export function updateTodo(id: string, body: ITodo, userId: string) {
   const todoToUpdate = TodoModel.getTodoById(id, userId);
-
+  console.log(todoToUpdate);
   if (!todoToUpdate) {
-    return {
-      error: `Todo with id : ${id} doesnt exist`,
-    };
+    return todoToUpdate;
   }
 
   if (body.todo && body.dueDate && body.isCompleted) {
