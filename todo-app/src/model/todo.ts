@@ -36,7 +36,6 @@ let todos = [
  * The function `getTodoById` retrieves all todo item  from a list of todos.
  * @returns The function `getTodoById` returns all todo object from the `todos` array*/
 export function getTodos(userId: string) {
-  console.log(userId);
   return todos.filter((element) => {
     if (element.createdBy === userId) {
       return element;
