@@ -5,7 +5,7 @@ import config from "../config";
 import { IUser } from "../interface/user";
 import { UnauthenticatedError } from "../error/UnauthenticatedError";
 
-export function auth(req: Request, res: Response, next: NextFunction) {
+export function authenticate(req: Request, res: Response, next: NextFunction) {
   const { authorization } = req.headers;
   if (!authorization) {
     next(new Error("Unauthenticated"));

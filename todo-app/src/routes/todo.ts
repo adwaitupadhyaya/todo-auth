@@ -6,14 +6,14 @@ import {
   updateTodo,
   deleteTodo,
 } from "../controller/todo";
-import { auth } from "../middleware/auth";
+import { authenticate } from "../middleware/auth";
 
 const router = express();
 
-router.get("/", auth, getTodos);
-router.get("/:id", auth, getTodoById);
-router.post("/", auth, createTodo);
-router.put("/:id", auth, updateTodo);
-router.delete("/:id", auth, deleteTodo);
+router.get("/", authenticate, getTodos);
+router.get("/:id", authenticate, getTodoById);
+router.post("/", authenticate, createTodo);
+router.put("/:id", authenticate, updateTodo);
+router.delete("/:id", authenticate, deleteTodo);
 
 export default router;

@@ -13,7 +13,7 @@ import { extractUserId } from "../utils/userId";
  * control the response status.
  */
 export function getTodos(req: Request, res: Response) {
-  const id = extractUserId(req);
+  const id = req.user?.id!;
   const data = todoService.getTodos(id);
   res.json(data);
 }
@@ -27,7 +27,7 @@ export function getTodos(req: Request, res: Response) {
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
 export function getTodoById(req: Request, res: Response) {
-  const userId = extractUserId(req);
+  const userId = req.user?.id!;
   const { id } = req.params;
   const data = todoService.getTodoById(id, userId);
   res.json(data);
@@ -43,7 +43,7 @@ export function getTodoById(req: Request, res: Response) {
  * been
  */
 export function createTodo(req: Request, res: Response) {
-  const id = extractUserId(req);
+  const id = req.user?.id!;
   const { body } = req;
   const data = todoService.createTodo(body, id);
   res.json({
@@ -61,7 +61,7 @@ export function createTodo(req: Request, res: Response) {
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
 export function updateTodo(req: Request, res: Response) {
-  const userId = extractUserId(req);
+  const userId = req.user?.id!;
   const { body } = req;
   const { id } = req.params;
   const data = todoService.updateTodo(id, body, userId);
@@ -78,7 +78,7 @@ export function updateTodo(req: Request, res: Response) {
  * "Successfully deleted" will be returned.
  */
 export function deleteTodo(req: Request, res: Response) {
-  const userId = extractUserId(req);
+  const userId = req.user?.id!;
   const { id } = req.params;
   const error = todoService.deleteTodo(id, userId);
 

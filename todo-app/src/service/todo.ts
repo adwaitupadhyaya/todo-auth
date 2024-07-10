@@ -44,11 +44,7 @@ export function createTodo(body: ITodo, id: string) {
  */
 export function updateTodo(id: string, body: ITodo, userId: string) {
   const todoToUpdate = TodoModel.getTodoById(id, userId);
-  if (todoToUpdate?.createdBy !== userId) {
-    return {
-      error: "Cannot update todo of other users",
-    };
-  }
+
   if (!todoToUpdate) {
     return {
       error: `Todo with id : ${id} doesnt exist`,

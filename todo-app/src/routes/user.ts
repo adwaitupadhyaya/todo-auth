@@ -7,14 +7,14 @@ import {
   deleteUser,
   getUserById,
 } from "../controller/user";
-import { auth, authorize } from "../middleware/auth";
+import { authenticate, authorize } from "../middleware/auth";
 
 const router = express();
 
-router.get("/", auth, authorize("superAdmin"), getUsers);
-router.get("/:id", auth, authorize("superAdmin"), getUserById);
-router.post("/", auth, authorize("superAdmin"), createUser);
-router.put("/:id", auth, authorize("superAdmin"), updateUser);
-router.delete("/:id", auth, authorize("superAdmin"), deleteUser);
+router.get("/", authenticate, authorize("superAdmin"), getUsers);
+router.get("/:id", authenticate, authorize("superAdmin"), getUserById);
+router.post("/", authenticate, authorize("superAdmin"), createUser);
+router.put("/:id", authenticate, authorize("superAdmin"), updateUser);
+router.delete("/:id", authenticate, authorize("superAdmin"), deleteUser);
 
 export default router;
