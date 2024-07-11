@@ -32,10 +32,19 @@ export async function createUser(req: Request, res: Response) {
   res.status(HttpStatusCodes.CREATED).json(data);
 }
 
-export function updateUser(req: Request, res: Response, next: NextFunction) {
+export async function updateUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = req.params;
   const { body } = req;
-  const data = userService.updateUser(id, body);
+  const password = await bcrypt.hash(body.password, 10);
+  const updatedUser = {
+    ...body,
+    password,
+  };
+  const data = userService.updateUser(id, updatedUser);
   if (!data) {
     next(new BadRequestError(`User with id ${id} not found`));
     return;

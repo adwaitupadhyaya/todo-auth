@@ -54,14 +54,7 @@ export function updateTodo(id: string, body: ITodo, userId: string) {
   if (!todoToUpdate) {
     return todoToUpdate;
   }
-
-  if (body.todo && body.dueDate && body.isCompleted) {
-    return TodoModel.updateTodo(id, body);
-  } else {
-    return {
-      error: `Body Needs all 3 attributes to update(todo,duedate,iscompleted)`,
-    };
-  }
+  return TodoModel.updateTodo(id, body);
 }
 
 /**

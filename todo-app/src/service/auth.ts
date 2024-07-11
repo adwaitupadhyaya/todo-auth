@@ -10,6 +10,7 @@ import loggerWithNameSpace from "../utils/logger";
 
 const loggerArea = "service";
 const logger = loggerWithNameSpace("Auth Service");
+
 export async function signup(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
