@@ -38,7 +38,6 @@ export function getTodoById(req: Request, res: Response, next: NextFunction) {
     next(new NotFoundError(`Todo with id: ${id} doesnt exist`));
     return;
   }
-
   res.status(HttpStatusCodes.OK).json(data);
 }
 
@@ -80,7 +79,6 @@ export function updateTodo(req: Request, res: Response, next: NextFunction) {
     next(new NotFoundError(`Todo with ${id} does not exist`));
     return;
   }
-
   res.status(HttpStatusCodes.OK).json(data);
 }
 
@@ -102,6 +100,5 @@ export function deleteTodo(req: Request, res: Response, next: NextFunction) {
     next(new NotFoundError(`Todo with id ${id} not found`));
     return;
   }
-
   res.status(HttpStatusCodes.OK).json(data);
 }
