@@ -6,6 +6,10 @@
   },
   "devDependencies": {
     "@types/joi": "^17.2.3",
-    "@types/winston": "^2.4.4"
+    "@types/mocha": "^10.0.7",
+    "@types/sinon": "^17.0.3",
+    "@types/winston": "^2.4.4",
+    "mocha": "^10.6.0",
+    "sinon": "^18.0.0"
   }
 }

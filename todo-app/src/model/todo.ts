@@ -5,7 +5,7 @@ import loggerWithNameSpace from "../utils/logger";
 const loggerArea = "model";
 const logger = loggerWithNameSpace("Todo Model");
 
-let todos = [
+export let todos = [
   {
     id: "1",
     todo: "Eat",

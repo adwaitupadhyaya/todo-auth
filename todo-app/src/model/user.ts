@@ -5,7 +5,7 @@ import loggerWithNameSpace from "../utils/logger";
 const loggerArea = "model";
 const logger = loggerWithNameSpace("User Model");
 
-let users: IUser[] = [
+export let users: IUser[] = [
   {
     name: "adw8",
     email: "adw8@gmail.com",
@@ -41,7 +41,8 @@ export function createUser(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
   logger.info(`${loggerArea}: create users`);
-  return users.push({ ...body, id: `${users.length + 1}` });
+  users.push({ ...body, id: `${users.length + 1}` });
+  return { ...body, id: `${users.length + 1}` };
 }
 
 export function updateUser(id: string, body: Omit<IUser, "id">) {

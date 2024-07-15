@@ -20,7 +20,7 @@ export async function signup(
     ...body,
     password,
   };
-  UserService.createUser(newUser);
+  return UserService.createUser(newUser);
 }
 
 export async function login(body: Pick<IUser, "email" | "password">) {
@@ -37,7 +37,7 @@ export async function login(body: Pick<IUser, "email" | "password">) {
   );
 
   if (!isValidPassword) {
-    return isValidPassword;
+    return undefined;
   }
 
   const payload = {

@@ -67,7 +67,7 @@ export function deleteTodo(id: string, userId: string) {
   const todoToDelete = TodoModel.getTodoById(id, userId);
 
   if (!todoToDelete) {
-    return todoToDelete;
+    return null;
   }
   return TodoModel.deleteTodo(id, userId);
 }

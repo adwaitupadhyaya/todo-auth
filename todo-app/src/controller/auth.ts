@@ -30,7 +30,6 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
   const data = await AuthService.refresh(body);
 
   if (!data) {
-    console.log("no refresh token");
     next(new BadRequestError("Refresh Token is necessary"));
     return;
   }
