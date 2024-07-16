@@ -31,7 +31,7 @@ export async function createUser(
 
 export function getUserByEmail(email: string) {
   logger.info(`${loggerArea}: get users by email`);
-  return userModel.getUserByEmail(email);
+  return userModel.UserModel.getUserByEmail(email);
 }
 
 export async function updateUser(id: string, body: Omit<IUser, "id">) {

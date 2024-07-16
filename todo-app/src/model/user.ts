@@ -47,8 +47,15 @@ export class UserModel extends BaseModel {
       .table("users")
       .where({ id });
 
-    console.log(query.toString());
     await query;
+
+    await this.queryBuilder()
+      .update({
+        user_id: id,
+        permission: body.permissions,
+      })
+      .table("permissions")
+      .where({ userId: id });
 
     return userToUpdate;
   }
@@ -57,8 +64,9 @@ export class UserModel extends BaseModel {
     const { q, page, size } = query;
 
     const data = this.queryBuilder()
-      .select("id", "name", "email")
+      .select("users.id", "users.name", "users.email", "permissions.permission")
       .table("users")
+      .leftJoin("permissions", "users.id", "permissions.user_id")
       .limit(size!)
       .offset((page! - 1) * size!);
 
@@ -74,20 +82,23 @@ export class UserModel extends BaseModel {
     return count;
   }
 
-  static async getUserById(id: string) {
+  static async getUserById(userId: string) {
     const query = this.queryBuilder()
-      .select("id", "name", "email")
+      .select("users.id", "users.name", "users.email", "permissions.permission")
       .table("users")
-      .where({ id: id });
+      .leftJoin("permissions", "users.id", "permissions.user_id")
+      .where({ "users.id": userId });
     const data = query;
     return data;
   }
 
   static async getUserByEmail(email: string) {
     const query = this.queryBuilder()
-      .select("id", "name", "email")
+      .select("users.id", "users.email", "users.password")
       .table("users")
-      .where({ email: email });
+      .innerJoin("permissions", "users.id", "permissions.user_id")
+      .where({ "users.email": email })
+      .first();
     const data = await query;
     return data;
   }
@@ -102,21 +113,16 @@ export let users: IUser[] = [
     email: "adw8@gmail.com",
     password: "$2b$10$N5zpXnpAd9yqwebahVEYHeT2APESXkefOkCLwb3484TLirasXMDqe",
     id: "1",
-    permissions: ["superAdmin"],
+    permissions: "superAdmin",
   },
   {
     name: "adw",
     email: "adw@gmail.com",
     password: "$2b$10$N5zpXnpAd9yqwebahVEYHeT2APESXkefOkCLwb3484TLirasXMDqe",
     id: "2",
-    permissions: [""],
+    permissions: "",
   },
 ];
-
-export function getUserByEmail(email: string) {
-  logger.info(`${loggerArea}: get users by email`);
-  return users.find(({ email: userEmail }) => userEmail === email);
-}
 
 export function createUser(
   body: Pick<IUser, "name" | "email" | "password" | "permissions">

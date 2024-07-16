@@ -29,7 +29,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 export function authorize(permission: string) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = req.user!;
-    if (!user.permissions.includes(permission)) {
+    if (user.permissions == permission) {
       next(new UnauthenticatedError("Forbidden"));
       return;
     }
