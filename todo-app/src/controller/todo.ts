@@ -1,10 +1,6 @@
 import { NextFunction, Response } from "express";
 import { Request } from "../interface/auth";
 import * as todoService from "../service/todo";
-import { verify } from "jsonwebtoken";
-import config from "../config";
-import { extractUserId } from "../utils/userId";
-import { BadRequestError } from "../error/BadRequestError";
 import HttpStatusCodes from "http-status-codes";
 import { NotFoundError } from "../error/NotFoundError";
 
@@ -15,9 +11,9 @@ import { NotFoundError } from "../error/NotFoundError";
  * HTTP response that the server sends back to the client. It allows you to send data, set headers, and
  * control the response status.
  */
-export function getTodos(req: Request, res: Response) {
+export async function getTodos(req: Request, res: Response) {
   const id = req.user?.id!;
-  const data = todoService.getTodos(id);
+  const data = await todoService.getTodos(id);
   res.status(HttpStatusCodes.OK).json(data);
 }
 
@@ -29,10 +25,14 @@ export function getTodos(req: Request, res: Response) {
  * Express Response object. It is used to send a response back to the client making the request. In
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
-export function getTodoById(req: Request, res: Response, next: NextFunction) {
+export async function getTodoById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const userId = req.user?.id!;
   const { id } = req.params;
-  const data = todoService.getTodoById(id, userId);
+  const data = await todoService.getTodoById(id, userId);
 
   if (!data) {
     next(new NotFoundError(`Todo with id: ${id} doesnt exist`));
@@ -50,10 +50,10 @@ export function getTodoById(req: Request, res: Response, next: NextFunction) {
  * request. In this case, the response is being sent as JSON with a message indicating that a todo has
  * been
  */
-export function createTodo(req: Request, res: Response) {
+export async function createTodo(req: Request, res: Response) {
   const id = req.user?.id!;
   const { body } = req;
-  const data = todoService.createTodo(body, id);
+  const data = await todoService.createTodo(body, id);
   res.status(HttpStatusCodes.CREATED).json({
     message: "Todo Created",
     created: data,
@@ -68,18 +68,20 @@ export function createTodo(req: Request, res: Response) {
  * Express Response object. It is used to send a response back to the client making the request. In
  * this case, the response is being sent as JSON data using the `res.json()` method.
  */
-export function updateTodo(req: Request, res: Response, next: NextFunction) {
+export async function updateTodo(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const userId = req.user?.id!;
   const { body } = req;
   const { id } = req.params;
-  const data = todoService.updateTodo(id, body, userId);
-
+  const data = await todoService.updateTodo(id, body, userId);
   if (!data) {
-    console.log("here baby");
     next(new NotFoundError(`Todo with ${id} does not exist`));
     return;
   }
-  res.status(HttpStatusCodes.OK).json(data);
+  res.status(HttpStatusCodes.OK).json({ updatedData: data });
 }
 
 /**
@@ -91,14 +93,18 @@ export function updateTodo(req: Request, res: Response, next: NextFunction) {
  * JSON response. Otherwise, if the deletion is successful, a JSON response with the message
  * "Successfully deleted" will be returned.
  */
-export function deleteTodo(req: Request, res: Response, next: NextFunction) {
+export async function deleteTodo(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const userId = req.user?.id!;
   const { id } = req.params;
-  const data = todoService.deleteTodo(id, userId);
+  const data = await todoService.deleteTodo(id, userId);
 
-  if (!data) {
+  if (data === null) {
     next(new NotFoundError(`Todo with id ${id} not found`));
     return;
   }
-  res.status(HttpStatusCodes.OK).json(data);
+  res.status(HttpStatusCodes.OK).json({ message: "Todo Deleted Succesfully" });
 }

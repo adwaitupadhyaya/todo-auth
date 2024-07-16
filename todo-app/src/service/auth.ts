@@ -26,7 +26,6 @@ export async function signup(
 export async function login(body: Pick<IUser, "email" | "password">) {
   logger.info(`${loggerArea}: Login`);
   const existingUser = await UserService.getUserByEmail(body.email);
-  console.log(existingUser);
   if (!existingUser) {
     return existingUser;
   }

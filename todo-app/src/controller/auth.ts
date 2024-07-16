@@ -16,7 +16,6 @@ export function signup(req: Request, res: Response) {
 export async function login(req: Request, res: Response, next: NextFunction) {
   const { body } = req;
   const data = await AuthService.login(body);
-  console.log(data);
   if (!data) {
     next(new NotFoundError(`Invalid email or password`));
     return;

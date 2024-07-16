@@ -112,6 +112,7 @@ export class UserModel extends BaseModel {
 
   static async delete(id: string) {
     await this.queryBuilder().table("permissions").where({ userId: id }).del();
+    await this.queryBuilder().table("todos").where({ created_by: id }).del();
     await this.queryBuilder().table("users").where({ id }).del();
   }
 }

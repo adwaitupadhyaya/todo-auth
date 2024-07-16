@@ -9,6 +9,10 @@ const knexConfig: Knex.Config = {
   wrapIdentifier: (value, originalImpl) => {
     if (value === "*") {
       return originalImpl(value);
+    } else if (value === "isCompleted") {
+      return originalImpl(value);
+    } else if (value === "dueDate") {
+      return originalImpl(value);
     }
     return originalImpl(toSnakeCase(value));
   },

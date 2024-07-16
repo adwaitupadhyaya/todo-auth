@@ -19,7 +19,6 @@ export async function getUserById(
 ) {
   const { id } = req.params;
   const data = await userService.getUserById(id);
-  console.log(data);
   if (data.length === 0) {
     next(new BadRequestError(`User with id ${id} not found`));
     return;
@@ -70,7 +69,7 @@ export async function deleteUser(
 ) {
   const { id } = req.params;
   const data = await userService.deleteUser(id);
-  console.log(data);
+
   if (data === null) {
     next(new NotFoundError(`User with id ${id} not found`));
     return;

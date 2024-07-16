@@ -1,112 +1,70 @@
 import { ITodo } from "./../interface/todo";
 
 import loggerWithNameSpace from "../utils/logger";
+import { BaseModel } from "./base";
 
 const loggerArea = "model";
 const logger = loggerWithNameSpace("Todo Model");
 
-export let todos = [
-  {
-    id: "1",
-    todo: "Eat",
-    isCompleted: true,
-    dueDate: "2024-12-20",
-    createdBy: "2",
-  },
-  {
-    id: "2",
-    todo: "Drink",
-    isCompleted: false,
-    dueDate: "2024-12-20",
-    createdBy: "2",
-  },
-  {
-    id: "3",
-    todo: "Sleep",
-    isCompleted: false,
-    dueDate: "2024-12-20",
-    createdBy: "1",
-  },
-  {
-    id: "4",
-    todo: "Dance",
-    isCompleted: false,
-    dueDate: "2024-12-20",
-    createdBy: "3",
-  },
-];
+export class TodoModel extends BaseModel {
+  // READ TODOS
+  static async getTodos(userId: string) {
+    const query = this.queryBuilder()
+      .select("todos.todo", "todos.isCompleted", "todos.dueDate", "users.name")
+      .table("todos")
+      .innerJoin("users", "users.id", "todos.created_by")
+      .where("todos.created_by", userId);
+    const data = await query;
+    return data;
+  }
 
-/**
- * The function `getTodoById` retrieves all todo item  from a list of todos.
- * @returns The function `getTodoById` returns all todo object from the `todos` array*/
-export function getTodos(userId: string) {
-  logger.info(`${loggerArea}: get todos`);
-  return todos.filter((element) => {
-    if (element.createdBy === userId) {
-      return element;
-    }
-  });
-}
+  static async getTodoById(id: string, userId: string) {
+    const query = this.queryBuilder()
+      .select(
+        "users.name as owner",
+        "todos.todo",
+        "todos.dueDate",
+        "todos.isCompleted"
+      )
+      .from("users")
+      .innerJoin("todos", "users.id", "todos.created_by")
+      .where("todos.created_by", userId)
+      .where("todos.id", id)
+      .first();
+    const data = await query;
+    return data;
+  }
 
-/**
- * The function `getTodoById` retrieves a todo item by its ID from a list of todos.
- * @param {string} id - The `id` parameter in the `getTodoById` function is a string representing the
- * unique identifier of the todo item that we want to retrieve from the `todos` array.
- * @returns The function `getTodoById` returns a todo object from the `todos` array that matches the
- * provided `id`.
- */
-export function getTodoById(id: string, userId: string) {
-  logger.info(`${loggerArea}: get todos by id`);
-  return todos.find(
-    ({ id: todoId, createdBy }) => todoId === id && createdBy === userId
-  );
-}
+  // CREATE TODOS
+  static async createTodo(todo: ITodo, id: string) {
+    const newTodo = {
+      todo: todo.todo,
+      dueDate: todo.dueDate,
+      isCompleted: todo.isCompleted,
+      created_by: id,
+    };
 
-/**
- * The function creates a new todo item and adds it to a list of todos.
- * @param {ITodo} todo - The `createTodo` function takes in a parameter `todo` of type `ITodo`, which
- * represents a todo item.
- * @returns The function `createTodo` is returning the newly created todo item after adding it to the
- * `todos` array.
- */
-export function createTodo(todo: ITodo, id: string) {
-  logger.info(`${loggerArea}: create todos`);
-  const newTodo = { id: `${todos.length + 1}`, createdBy: `${id}`, ...todo };
-  todos.push(newTodo);
-  return newTodo;
-}
+    const query = await this.queryBuilder().insert(newTodo).table("todos");
+    return newTodo;
+  }
 
-/**
- * The function `updateTodo` updates a specific todo item in an array based on the provided ID and todo
- * object.
- * @param {string} id - The `id` parameter in the `updateTodo` function is a string that represents the unique identifier of the todo item that needs to be updated.
- * @param {ITodo} todo - The `todo` parameter in the `updateTodo` function is an object of type `ITodo`. It contains properties such as `todo` (the task description), `dueDate` (the deadline for the task), and `isCompleted` (a boolean indicating whether the task is completed
- * @returns The `updateTodo` function is returning the updated todo item with the specified `id`.
- */
-export function updateTodo(id: string, todo: ITodo) {
-  logger.info(`${loggerArea}: update todos todos`);
-  let updatedTodo;
-  todos = todos.map((element) => {
-    if (element.id !== id) {
-      return element;
-    }
-    element.todo = todo.todo;
-    element.dueDate = todo.dueDate;
-    element.isCompleted = todo.isCompleted;
-    updatedTodo = element;
-    return updatedTodo;
-  });
-  return updatedTodo;
-}
+  // UPDATE TODOS
+  static async updateTodo(id: string, todo: ITodo, userId: string) {
+    const todoToUpdate = {
+      todo: todo.todo,
+      isCompleted: todo.isCompleted,
+      dueDate: todo.dueDate,
+      created_by: userId,
+    };
+    const query = await this.queryBuilder()
+      .update(todoToUpdate)
+      .table("todos")
+      .where({ id });
+    return todoToUpdate;
+  }
 
-/**
- * The function `deleteTodo` removes a todo item from a list based on its id.
- * @param {string} id - The `id` parameter is a string that represents the unique identifier of the
- * todo item that needs to be deleted from the `todos` array.
- */
-export function deleteTodo(id: string, userId: string) {
-  logger.info(`${loggerArea}: delete todos`);
-  return (todos = todos.filter(
-    (element) => element.id !== id && element.createdBy === userId
-  ));
+  // DELETE TODOS
+  static async deleteTodo(id: string) {
+    await this.queryBuilder().table("todos").where({ id }).del();
+  }
 }
