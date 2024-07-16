@@ -45,11 +45,11 @@ export async function updateUser(id: string, body: Omit<IUser, "id">) {
   return await userModel.UserModel.update(id, body);
 }
 
-export function deleteUser(id: string) {
+export async function deleteUser(id: string) {
   logger.info(`${loggerArea}: delete users`);
-  const userToDelete = userModel.UserModel.getUserById(id);
-  if (!userToDelete) {
-    return userToDelete;
+  const userToDelete = await userModel.UserModel.getUserById(id);
+  if (userToDelete.length === 0) {
+    return null;
   }
-  return userModel.deleteUser(id);
+  await userModel.UserModel.delete(id);
 }

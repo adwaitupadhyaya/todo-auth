@@ -63,12 +63,17 @@ export async function updateUser(
   });
 }
 
-export function deleteUser(req: Request, res: Response, next: NextFunction) {
+export async function deleteUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = req.params;
-  const data = userService.deleteUser(id);
-  if (!data) {
+  const data = await userService.deleteUser(id);
+  console.log(data);
+  if (data === null) {
     next(new NotFoundError(`User with id ${id} not found`));
     return;
   }
-  res.status(HttpStatusCodes.OK).json(data);
+  res.status(HttpStatusCodes.OK).json({ message: "User Deleted Succesfully" });
 }

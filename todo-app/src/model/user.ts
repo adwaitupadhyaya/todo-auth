@@ -5,6 +5,7 @@ import loggerWithNameSpace from "../utils/logger";
 import { BaseModel } from "./base";
 
 export class UserModel extends BaseModel {
+  // CREATE USER
   static async create(
     user: Pick<IUser, "name" | "email" | "password" | "permissions">
   ) {
@@ -34,6 +35,53 @@ export class UserModel extends BaseModel {
     return user;
   }
 
+  // READ USERS
+  static getUsers(query: GetUserQuery) {
+    const { q, page, size } = query;
+
+    const data = this.queryBuilder()
+      .select("users.id", "users.name", "users.email", "permissions.permission")
+      .table("users")
+      .leftJoin("permissions", "users.id", "permissions.user_id")
+      .limit(size!)
+      .offset((page! - 1) * size!);
+
+    if (q) {
+      data.whereLike("name", `%${q}%`);
+    }
+
+    return data;
+  }
+
+  // FOR PAGINATON
+  static count() {
+    const count = this.queryBuilder().count("*").table("users").first();
+    return count;
+  }
+
+  // READ USERS
+  static async getUserById(userId: string) {
+    const query = this.queryBuilder()
+      .select("users.id", "users.name", "users.email", "permissions.permission")
+      .table("users")
+      .leftJoin("permissions", "users.id", "permissions.user_id")
+      .where({ "users.id": userId });
+    const data = query;
+    return data;
+  }
+
+  static async getUserByEmail(email: string) {
+    const query = this.queryBuilder()
+      .select("users.id", "users.email", "users.password")
+      .table("users")
+      .innerJoin("permissions", "users.id", "permissions.user_id")
+      .where({ "users.email": email })
+      .first();
+    const data = await query;
+    return data;
+  }
+
+  // UPDATE USER INFO
   static async update(id: string, body: Omit<IUser, "id">) {
     const userToUpdate = {
       name: body.name,
@@ -60,47 +108,11 @@ export class UserModel extends BaseModel {
     return userToUpdate;
   }
 
-  static getUsers(query: GetUserQuery) {
-    const { q, page, size } = query;
+  // DELETE USER
 
-    const data = this.queryBuilder()
-      .select("users.id", "users.name", "users.email", "permissions.permission")
-      .table("users")
-      .leftJoin("permissions", "users.id", "permissions.user_id")
-      .limit(size!)
-      .offset((page! - 1) * size!);
-
-    if (q) {
-      data.whereLike("name", `%${q}%`);
-    }
-
-    return data;
-  }
-
-  static count() {
-    const count = this.queryBuilder().count("*").table("users").first();
-    return count;
-  }
-
-  static async getUserById(userId: string) {
-    const query = this.queryBuilder()
-      .select("users.id", "users.name", "users.email", "permissions.permission")
-      .table("users")
-      .leftJoin("permissions", "users.id", "permissions.user_id")
-      .where({ "users.id": userId });
-    const data = query;
-    return data;
-  }
-
-  static async getUserByEmail(email: string) {
-    const query = this.queryBuilder()
-      .select("users.id", "users.email", "users.password")
-      .table("users")
-      .innerJoin("permissions", "users.id", "permissions.user_id")
-      .where({ "users.email": email })
-      .first();
-    const data = await query;
-    return data;
+  static async delete(id: string) {
+    await this.queryBuilder().table("permissions").where({ userId: id }).del();
+    await this.queryBuilder().table("users").where({ id }).del();
   }
 }
 
@@ -123,27 +135,3 @@ export let users: IUser[] = [
     permissions: "",
   },
 ];
-
-export function createUser(
-  body: Pick<IUser, "name" | "email" | "password" | "permissions">
-) {
-  logger.info(`${loggerArea}: create users`);
-  users.push({ ...body, id: `${users.length + 1}` });
-  return { ...body, id: `${users.length + 1}` };
-}
-
-export function updateUser(id: string, body: Omit<IUser, "id">) {
-  logger.info(`${loggerArea}: update users`);
-  return (users = users.map((element) => {
-    if (element.id === id) {
-      element = { id, ...body };
-      return element;
-    }
-    return element;
-  }));
-}
-
-export function deleteUser(id: string) {
-  logger.info(`${loggerArea}: delete users`);
-  return (users = users.filter((element) => element.id !== id));
-}
