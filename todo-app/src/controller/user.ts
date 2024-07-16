@@ -6,15 +6,21 @@ import * as userService from "../service/user";
 import { BadRequestError } from "../error/BadRequestError";
 import HttpStatusCodes from "http-status-codes";
 
-export function getUsers(req: Request, res: Response) {
-  const data = userService.getUsers();
+export async function getUsers(req: Request, res: Response) {
+  const { query } = req;
+  const data = await userService.getUsers(query);
   res.status(HttpStatusCodes.OK).json(data);
 }
 
-export function getUserById(req: Request, res: Response, next: NextFunction) {
+export async function getUserById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = req.params;
-  const data = userService.getUserById(id);
-  if (!data) {
+  const data = await userService.getUserById(id);
+  console.log(data);
+  if (data.length === 0) {
     next(new BadRequestError(`User with id ${id} not found`));
     return;
   }
@@ -28,8 +34,11 @@ export async function createUser(req: Request, res: Response) {
     ...body,
     password,
   };
-  const data = userService.createUser(newUser);
-  res.status(HttpStatusCodes.CREATED).json(data);
+  const data = await userService.createUser(newUser);
+  res.status(HttpStatusCodes.CREATED).json({
+    message: "User Created Succesfully",
+    data: data,
+  });
 }
 
 export async function updateUser(
@@ -49,7 +58,9 @@ export async function updateUser(
     next(new BadRequestError(`User with id ${id} not found`));
     return;
   }
-  res.status(HttpStatusCodes.OK).json(data);
+  res.status(HttpStatusCodes.OK).json({
+    message: "User Updated Successfully",
+  });
 }
 
 export function deleteUser(req: Request, res: Response, next: NextFunction) {

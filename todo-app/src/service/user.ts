@@ -1,25 +1,32 @@
-import { IUser } from "../interface/user";
+import { GetUserQuery, IUser } from "../interface/user";
 import * as userModel from "../model/user";
 import loggerWithNameSpace from "../utils/logger";
-
 const loggerArea = "service";
 const logger = loggerWithNameSpace("User Service");
 
-export function getUsers() {
+export async function getUsers(query: GetUserQuery) {
   logger.info(`${loggerArea}: get users`);
-  return userModel.getUsers();
+  const data = await userModel.UserModel.getUsers(query);
+  const count = await userModel.UserModel.count();
+  const meta = {
+    page: 1,
+    size: data.length,
+    total: +count.count,
+  };
+
+  return { data, meta };
 }
 
 export function getUserById(id: string) {
   logger.info(`${loggerArea}: get users by id `);
-  return userModel.getUserById(id);
+  return userModel.UserModel.getUserById(id);
 }
 
-export function createUser(
+export async function createUser(
   newUser: Pick<IUser, "name" | "email" | "password" | "permissions">
 ) {
   logger.info(`${loggerArea}: create users`);
-  return userModel.createUser(newUser);
+  return await userModel.UserModel.create(newUser);
 }
 
 export function getUserByEmail(email: string) {
@@ -27,19 +34,20 @@ export function getUserByEmail(email: string) {
   return userModel.getUserByEmail(email);
 }
 
-export function updateUser(id: string, body: Omit<IUser, "id">) {
+export async function updateUser(id: string, body: Omit<IUser, "id">) {
   logger.info(`${loggerArea}: update users`);
-  const userToUpdate = userModel.getUserById(id);
+  const userToUpdate = await userModel.UserModel.getUserById(id);
 
   if (!userToUpdate) {
     return userToUpdate;
   }
-  return userModel.updateUser(id, body);
+
+  return await userModel.UserModel.update(id, body);
 }
 
 export function deleteUser(id: string) {
   logger.info(`${loggerArea}: delete users`);
-  const userToDelete = userModel.getUserById(id);
+  const userToDelete = userModel.UserModel.getUserById(id);
   if (!userToDelete) {
     return userToDelete;
   }

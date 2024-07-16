@@ -17,7 +17,7 @@ export function seed(knex: Knex): Promise<void> {
           todo: "Eat",
           isCompleted: true,
           dueDate: "2024-04-04",
-          created_by: 1,
+          created_by: 3,
         },
         {
           todo: "Drink",
@@ -29,7 +29,7 @@ export function seed(knex: Knex): Promise<void> {
           todo: "Sleep",
           isCompleted: true,
           dueDate: "2024-04-14",
-          created_by: 3,
+          created_by: 1,
         },
       ]);
     });

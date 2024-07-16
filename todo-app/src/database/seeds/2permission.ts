@@ -13,9 +13,9 @@ export function seed(knex: Knex): Promise<void> {
     .del()
     .then(() => {
       return knex(TABLE_NAME).insert([
-        { permission: "superAdmin", user_id: 1 },
-        { permission: "user", user_id: 2 },
         { permission: "superAdmin", user_id: 3 },
+        { permission: "user", user_id: 2 },
+        { permission: "superAdmin", user_id: 1 },
       ]);
     });
 }

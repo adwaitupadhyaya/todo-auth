@@ -9,17 +9,23 @@ import {
 } from "../controller/user";
 import { authenticate, authorize } from "../middleware/auth";
 import { validateReqBody } from "../middleware/validator";
-import { createUserBodySchema } from "../schema/user";
+import { createUserBodySchema, getUserQuerySchema } from "../schema/user";
 
 const router = express();
 
-router.get("/", authenticate, authorize("superAdmin"), getUsers);
+router.get(
+  "/",
+  validateReqBody(getUserQuerySchema),
+  authenticate,
+  authorize("superAdmin"),
+  getUsers
+);
 router.get("/:id", authenticate, authorize("superAdmin"), getUserById);
 router.post(
   "/",
+  validateReqBody(createUserBodySchema),
   authenticate,
   authorize("superAdmin"),
-  validateReqBody(createUserBodySchema),
   createUser
 );
 router.put(

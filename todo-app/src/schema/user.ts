@@ -36,5 +36,29 @@ export const createUserBodySchema = Joi.object({
 
       return value;
     }),
-  permissions: Joi.array().items(Joi.string()).required(),
+  permissions: Joi.string(),
+});
+
+export const getUserQuerySchema = Joi.object({
+  q: Joi.string().optional(),
+  page: Joi.number()
+    .min(1)
+    .optional()
+    .messages({
+      "number.base": "page must be a number",
+      "number.min": "page must be greater than or equal to 1",
+    })
+    .default(1),
+  size: Joi.number()
+    .min(1)
+    .max(9)
+    .optional()
+    .messages({
+      "number.base": "page must be a number",
+      "number.min": "size must be greater than or equal to 1",
+      "number.max": "size must be less than or equal to 9",
+    })
+    .default(9),
+}).options({
+  stripUnknown: true,
 });
